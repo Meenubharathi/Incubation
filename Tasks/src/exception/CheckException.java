@@ -12,15 +12,6 @@ public class CheckException extends Exception
     {
       super(str);
     }
-    /*public Object check(Object string) throws CheckException
-    {
-         if(string==null)
-         {
-         throw new CheckException("no string found");
-         }
-         return string;
-    }*/
-
 }   
 
 	  

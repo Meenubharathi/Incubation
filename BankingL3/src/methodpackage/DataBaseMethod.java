@@ -22,13 +22,13 @@ public class DataBaseMethod
     {
     	String query="create table USER"+"(CUSTOMER_ID integer(5) NOT NULL,"+"NAME varchar(20) NOT NULL,"
                                         +"EMAIL varchar(30) NOT NULL,"+"PHONE_NO bigint(10) NOT NULL,"
-    			                        +"PASSWORD varchar(15) NOT NULL,"+"STATUS varchar(10) NOT NULL,"+"PRIMARY KEY (CUSTOMER_ID))";
+    			                        +"PASSWORD varchar(15) NOT NULL,"+"STATUS varchar(10) NOT NULL,"+"ROLE varchar(15) NOT NULL,"+"PRIMARY KEY (CUSTOMER_ID))";
     	return query;
     }
     public String createCustomerDetailTable()
     {
     	String query="create table CUSTOMER_DETAILS (CUSTOMER_ID integer(5) NOT NULL,ADHAR bigint(15) NOT NULL,PAN varchar(15) NOT NULL,"
-     	 		+ "DOB varchar(15) NOT NULL,ADDRESS varchar(100) NOT NULL,PRIMARY KEY (ADHAR),FOREIGN KEY (CUSTOMER_ID) REFERENCES USER(CUSTOMER_ID))";
+     	 		+ "DOB varchar(15) NOT NULL,ADDRESS varchar(100) NOT NULL,PRIMARY KEY (CUSTOMER_ID),FOREIGN KEY (CUSTOMER_ID) REFERENCES USER(CUSTOMER_ID))";
     	return query;
     }
     public String createCustomerAccountDetailTable()
@@ -41,7 +41,7 @@ public class DataBaseMethod
     }
     public String createTransactionTable()
     {
-        String query="create table TRANSACTION_DETAILS (TRANSACTION_ID integer(5) NOT NULL AUTO_INCREMENT,CUSTOMER_ID integer(5) NOT NULL,TIME bigint(20) NOT NULL,ACCOUNT_NO bigint(20) NOT NULL,"
+        String query="create table TRANSACTION_DETAILS (TRANSACTION_ID integer(5)  AUTO_INCREMENT,CUSTOMER_ID integer(5) NOT NULL,TIME bigint(20) NOT NULL,ACCOUNT_NO bigint(20) NOT NULL,"
         		+ "MODE_OF_TRANSACTION varchar(50) NOT NULL,AMOUNT bigint(10) NOT NULL,CURRENT_BALANCE bigint(10) NOT NULL,"
         		+ "TRANSACTION_ACCOUNT bigint(20) NOT NULL,PRIMARY KEY (TRANSACTION_ID),"
         		+ "FOREIGN KEY (ACCOUNT_NO) REFERENCES CUSTOMER_ACCOUNT_DETAILS (ACCOUNT_NO)) ";
@@ -49,7 +49,7 @@ public class DataBaseMethod
     }
     public void insertUserDetails(List<UserDetails> list) throws SQLException
     {
-    	String query="insert into USER"+"(CUSTOMER_ID,NAME,EMAIL,PHONE_NO,PASSWORD,STATUS)"+"values (?,?,?,?,?,?)";
+    	String query="insert into USER"+"(CUSTOMER_ID,NAME,EMAIL,PHONE_NO,PASSWORD,STATUS,ROLE)"+"values (?,?,?,?,?,?,?)";
     	 try(Connection connect=Database.connection();
     		  	 PreparedStatement	statement =connect.prepareStatement(query);)
     	        {
@@ -61,6 +61,7 @@ public class DataBaseMethod
     	        	   statement.setLong(4, user.getPhoneNo());
     	        	   statement.setString(5, user.getPassWord());
     	        	   statement.setString(6, user.getStatus());
+    	        	   statement.setString(7, user.getRole());
     	        	   statement.execute();
     	           }
     	        }

@@ -130,9 +130,9 @@ public class LogicalLayer
   }
     	 
     
-    public Map<Integer,Map<Long,CustomerAccountDetails>> getAccountDetails(int id) throws SQLException
+    public Map<Long,CustomerAccountDetails> getAccountDetails(int id) throws SQLException
     {
-    		Map<Integer,Map<Long,CustomerAccountDetails>> map=new HashMap<>();
+    		//Map<Integer,Map<Long,CustomerAccountDetails>> map=new HashMap<>();
     	Map<Long,CustomerAccountDetails> map1=new HashMap<>();
        	 String query="select*from CUSTOMER_ACCOUNT_DETAILS INNER JOIN USER ON USER.CUSTOMER_ID=CUSTOMER_ACCOUNT_DETAILS.CUSTOMER_ID where USER.CUSTOMER_ID= "+id+"";
      	 try(Connection connect=Database.connection();
@@ -148,12 +148,31 @@ public class LogicalLayer
          		    acc.setBalance(result.getLong(5));
          			acc.setAccountType(result.getString(6));
          			acc.setStatus(result.getString(7));
-         			map1.put(result.getLong("ACCOUNT_NO"),acc);
-          	    	map.put(id, map1);	  
+         			//map1.put(result.getLong("ACCOUNT_NO"),acc);
+          	    	map1.put(acc.getAccountNo(),acc);	  
           		}
-          		return map;
+          		
           	}
-          
+     	return map1;
+    }
+    public Map<Integer,CustomerAccountDetails> mainPage(int id) throws SQLException
+    {
+    	Map<Integer,CustomerAccountDetails> map=new HashMap<>();
+    	String query="select*from CUSTOMER_ACCOUNT_DETAILS INNER JOIN USER ON USER.CUSTOMER_ID=CUSTOMER_ACCOUNT_DETAILS.CUSTOMER_ID where USER.CUSTOMER_ID= "+id+"";
+    	 try(Connection connect=Database.connection();
+       		  	 PreparedStatement	statement =connect.prepareStatement(query);ResultSet result=statement.executeQuery();)
+         	{
+         		while(result.next())
+         		{
+         	    	CustomerAccountDetails acc=new CustomerAccountDetails();
+         	    	acc.setAccountNo(result.getLong(2));
+         			acc.setAccountType(result.getString(6));
+                	acc.setBalance(result.getLong(5));
+                	 map.put(id, acc);
+          			
+         		}
+         	}
+          return map;
     }
  
     public Map<Long,CustomerAccountDetails> getParticularAccountDetails(long acc_no) throws SQLException
@@ -218,25 +237,27 @@ public class LogicalLayer
  	    return milliSecond;
     }
 	public long credit(long amount,long accNo) throws SQLException
-	{
-	    long balance =getBalance(accNo);
+	{   long acc_no=present(accNo);
+        long balance =getBalance(acc_no);
 	    balance=balance+amount;
 	    return balance;
 	}
     public long debit(long amount,long accNo) throws SQLException
     {
-       long balance =getBalance(accNo);
- 	   if(balance>=3000)
+    	long acc_no=present(accNo);
+       long balance =getBalance(acc_no);
+ 	   if(balance>=1000)
  	   {
  		        if(amount<balance)
  		        {
  	                    balance=balance-amount;
- 	                    if(balance<3000)
+ 	                    if(balance<1000)
  	                    return balance;
  	            }
  	   }
  	   return balance;
     } 
+   
     public long getBalance(long accNo) throws SQLException
     {
     	String query="select BALANCE from CUSTOMER_ACCOUNT_DETAILS  where ACCOUNT_NO="+accNo+"";
@@ -267,7 +288,8 @@ public class LogicalLayer
     	long acc_no=0;
     	try(Connection connect=Database.connection();
      		  	 PreparedStatement	statement =connect.prepareStatement(query);ResultSet result=statement.executeQuery();)
-       	{
+    
+    	{
        		while(result.next())
        		{
        			acc_no=result.getLong("ACCOUNT_NO");
@@ -324,7 +346,7 @@ public class LogicalLayer
    public Map<Long,List<TransactionDetails>> lastTransaction(long accNo) throws SQLException
    {
 	   Map<Long,List<TransactionDetails>> map=new HashMap<>();
-	  List<TransactionDetails> list=new ArrayList();
+	  List<TransactionDetails> list=new ArrayList<TransactionDetails>();
 	   String query="select * from TRANSACTION_DETAILS where ACCOUNT_NO="+accNo+" limit 5";
 	   try(Connection connect=Database.connection();
    		  	 PreparedStatement	statement =connect.prepareStatement(query);ResultSet result=statement.executeQuery();)
@@ -332,13 +354,13 @@ public class LogicalLayer
      		while(result.next())
      		{
      		     TransactionDetails trans=new TransactionDetails();
-                 trans.setAccount_Number(result.getLong(1));
                  trans.setCustomerId(result.getInt(2));
                  trans.setTime(result.getLong(3));
-                 trans.setAmount(result.getLong(4));
+                 trans.setAccount_Number(result.getLong(4));
                  trans.setModeOfTransaction(result.getString(5));
-                 trans.setCurrent_Balance(result.getLong(6));
-                 trans.setTransaction_Account(result.getLong(7));
+                 trans.setAmount(result.getLong(6));
+                 trans.setCurrent_Balance(result.getLong(7));
+                 trans.setTransaction_Account(result.getLong(8));
                  list.add(trans);
                  map.put(accNo,list);
      		}

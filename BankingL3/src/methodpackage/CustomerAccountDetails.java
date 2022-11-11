@@ -67,6 +67,6 @@ public class CustomerAccountDetails
      public String toString()
      {
     	 return "CUSTOMER_ID: " +this.customerID+ " ,ACCOUNT_NO: " +this.accountNo+ " ,IFSC_CODE: " +this.IFSCcode+
-    			 " ,BRANCH: "+this.branch+ " ,ACCOUNT_TYPE: " +this.accountType+ " ,BALANCE: " +this.balance;
+    			 " ,BRANCH: "+this.branch+ " ,ACCOUNT_TYPE: " +this.accountType+ " ,BALANCE: " +this.balance+ " ,STATUS: "+this.status;
      }
 }

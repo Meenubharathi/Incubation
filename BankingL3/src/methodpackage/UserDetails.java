@@ -8,7 +8,14 @@ public class UserDetails
     private long phoneNo;
     private String passWord;
     private String status;
-    public String getStatus() 
+    private String role;
+    public String getRole() {
+		return role;
+	}
+	public void setRole(String role) {
+		this.role = role;
+	}
+	public String getStatus() 
     {
 		return status;
 	}
@@ -58,6 +65,7 @@ public class UserDetails
     }
     public String toString()
     {
-    	return "CUSTOMER_ID: " +this.userId+ " ,NAME: " +this.name+ " ,Email: " +this.email+ " ,PHONE_NO: " +this.phoneNo+ " ,PASSWORD: " +this.passWord+ " ,STATUS: " +this.status;
+    	return "CUSTOMER_ID: " +this.userId+ " ,NAME: " +this.name+ " ,Email: " +this.email+ " ,PHONE_NO: " +this.phoneNo+ " ,PASSWORD: " +this.passWord+ " ,STATUS: " 
+        +this.status+ " ,ROLE: " +this.role;
     }
 }

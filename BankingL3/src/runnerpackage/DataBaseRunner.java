@@ -74,8 +74,12 @@ public class DataBaseRunner
        			   switch(entry)
        			   {
        			        case 1:
-       			        	Map<Integer,Map<Long,CustomerAccountDetails>>  allmap=logic.getAccountDetails(id);
+       			        	Map<Long,CustomerAccountDetails>  allmap=logic.getAccountDetails(id);
        			        	System.out.println(allmap);
+       			        	for (Map.Entry<Long,CustomerAccountDetails> entry1 : allmap.entrySet())
+   						   {
+   						     System.out.println("customer id "+entry1.getKey()+entry1.getValue());
+   						   }
        			        
        	    				break;
        			       case 2:
@@ -155,7 +159,7 @@ public class DataBaseRunner
 			  		                      transaction.setCurrent_Balance(debit);
 			  		                      trans=new ArrayList<TransactionDetails>();
 			  			  	              trans.add(transaction);
-			  			             	  data.insertTransactionDetails(trans);
+			  			             	  //data.insertTransactionDetails(trans);
 	  			                          }
 	  			                          else
 	  			                          {
@@ -273,6 +277,9 @@ public class DataBaseRunner
     			       				System.out.println("STATUS");
     			       				String status=input.next();
     			       				user.setStatus(status);
+    			       				System.out.println("ROLE");
+    			       				String role=input.next();
+    			       				user.setRole(role);
     			       				list2.add(user);
     			       				data.insertUserDetails(list2);
     			       			}
@@ -396,6 +403,129 @@ public class DataBaseRunner
     			data.table(query);
     		    System.out.println("table created successfully");
     		    break;
+    		case 6:
+    			 System.out.println("enter customer id");
+			     int cusId=input.nextInt();
+			   	 TransactionDetails transfer=new TransactionDetails();
+    			 long time=logic.milliseconds();
+			     System.out.println("the time is "+time);
+			     System.out.println("Enter account no");
+		         long no=input.nextLong();
+		         long balance=logic.getBalance(no);
+		         System.out.println("the current balance is "+balance);
+		         System.out.println("Enter the transaction account");
+			     long transAccount=input.nextLong();
+			     long balance1=logic.getBalance(transAccount);
+				 System.out.println("the current balance is "+balance1);
+				 String mode="credit";
+				 String mode1="debit";
+                 System.out.println(" the amount to be credited");
+                 long amount=input.nextLong();
+                 long credit=logic.credit(amount,no);
+	             System.out.println(credit);
+	             logic.update(balance,credit);
+	             long debit=logic.debit(amount,transAccount);
+	             System.out.println(debit);
+	             logic.update(balance1,debit);
+		             
+    		    transaction.setTime(time);
+    		    transaction.setCustomerId(cusId);
+    		    transaction.setAccount_Number(no);
+    		    transaction.setModeOfTransaction(mode);
+    		    transaction.setAmount(amount);
+    		    transaction.setCurrent_Balance(credit);
+    		    transaction.setTransaction_Account(transAccount);
+    		    
+    		    transfer.setTime(time);
+    		    transfer.setCustomerId(cusId);
+    		    transfer.setAccount_Number(transAccount);
+    		    transfer.setModeOfTransaction(mode1);
+    		    transfer.setAmount(amount);
+    		    transfer.setCurrent_Balance(debit);
+    		    transfer.setTransaction_Account(no);
+    		    
+    		    List<TransactionDetails> trans=new ArrayList<TransactionDetails>();
+    		   // List<TransactionDetails> trans1=new ArrayList<TransactionDetails>();
+  	          
+	            trans.add(transaction);
+          	    trans.add(transfer);
+          	    System.out.println(trans);
+          	   // System.out.println(trans1);
+          	    data.insertTransactionDetails(trans);
+          	    //data.insertTransactionDetails(trans1);
+               break;
+    		case 7:
+    			Map<Integer,CustomerAccountDetails> map=logic.mainPage(101);
+    			System.out.println(map);
+    		case 8:
+    			 System.out.println("enter customer id");
+			     int customerId=input.nextInt();
+			   	
+    			 trans=new ArrayList<TransactionDetails>();
+                 transaction=new TransactionDetails();
+                 transfer=new TransactionDetails();
+                 time=logic.milliseconds();
+                 System.out.println("Enter account no");
+		         long accountNo=input.nextLong();
+		       	  mode="Debit";
+    	    	  mode1="Credit";
+    	    	  System.out.println(" the amount to be credited");
+                  amount=input.nextLong();
+                   System.out.println("Enter the transaction account");
+ 			      transAccount=input.nextLong();
+ 			   	 debit=logic.debit(amount,accountNo);
+    	    	 credit=logic.credit(amount,transAccount);
+                	transaction.setTime(time);
+   		    transaction.setCustomerId(customerId);
+   		    transaction.setAccount_Number(accountNo);
+   		    transaction.setModeOfTransaction(mode);
+   		    transaction.setAmount(amount);
+   		    transaction.setCurrent_Balance(debit);
+   		    transaction.setTransaction_Account(transAccount);
+   		    
+   		    transfer.setTime(time);
+   		    transfer.setCustomerId(customerId);
+   		    transfer.setAccount_Number(transAccount);
+   		    transfer.setModeOfTransaction(mode1);
+   		    transfer.setAmount(amount);
+   		    transfer.setCurrent_Balance(credit);
+   		    transfer.setTransaction_Account(accountNo);
+   		 
+   		     balance=logic.getBalance(accountNo);
+   		     balance1=logic.getBalance(transAccount);
+   		    logic.update(balance,debit);
+   		    logic.update(balance1,credit);
+               
+   		    trans.add(transaction);
+         	    trans.add(transfer);
+         	  
+         	    data.insertTransactionDetails(trans);
+         	  break;
+         	  
+    		case 9:
+    			System.out.println("enter customer id");
+			      customerId=input.nextInt();
+    			System.out.println("password:");
+    			String password=input.next();
+    			System.out.println("new password:");
+    			String newPW=input.next();
+    			System.out.println("re enter password:");
+    			String re=input.next();
+    			String field="PASSWORD";
+    			String pw=logic.getPassword(customerId);
+    	        if(password.equals(pw))
+    	    	 {
+    				 System.out.println(password);
+    	    		 if(newPW.equals(re))
+    	    		 {
+    	    			 System.out.println(newPW);
+    	    			 logic.updateUserDetails(field, newPW, customerId);
+    	    		 }
+    	    	 }
+    	 
+    			
+    			
+   	     
     	    			}
        	}catch(SQLException ex)
    	    {
